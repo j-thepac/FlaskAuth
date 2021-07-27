@@ -5,12 +5,12 @@ This is a simple project to demo authentication .
 * Valid user should be to open http://127.0.0.1:5000/protected
 
 #### Usecase 1 : Access Using Browser
-* User opens  http://127.0.0.1:5000/**login** from browser 
-* Gives valid credentials and he will be redirected to ** /protected**
+* User opens  http://127.0.0.1:5000/login from browser 
+* Gives valid credentials and he will be redirected to /protected
 
 #### Usecase 2 : Access directly from REST call
-* User can directly open  ** /protected** by GET Rest call  
-	1. Either gives valid Authorization header
+* User can directly open  http://127.0.0.1:5000/protected by GET Rest call  
+	1. If he either gives valid Authorization header
 	2. Either if he has valid token
 
 ## Pre-Req
