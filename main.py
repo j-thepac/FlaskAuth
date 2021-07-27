@@ -5,15 +5,14 @@
 """
 import os
 
-import flask_login,flask
-from flask import render_template
+import flask_login
+from flask import render_template,Flask,request,redirect,url_for
 
-app = flask.Flask(__name__)
-app.secret_key = os.environ.get("SECRETKEY")  # random key used to encrypt your cookies and save send them to the browser
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") #os.environ.get("SECRETKEY")  # random key used to encrypt your cookies and save send them to the browser
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
-
-users = {'foo@bar.tld': {'password':  os.environ.get("password") }}#
+users = {'test@gmail.com': {'password':  os.environ.get("PASSWORD") }}
 
 class User(flask_login.UserMixin):
     pass
@@ -26,33 +25,40 @@ def user_loader(email):
     user.id = email
     return user
 
-# @login_manager.request_loader
-# def request_loader(request):
-#     email = request.form.get('email')
-#     if email not in users: return
-#     user = User()
-#     user.id = email
-#     user.is_authenticated = request.form['password'] == users[email]['password']
-#     return user
+@login_manager.request_loader
+def request_loader(request):
+    token = request.headers.get('Authorization')
+    if token is None:
+        token = request.args.get('token')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if flask.request.method == 'GET':
-        return render_template("index.html")
-    if flask.request.method == 'POST':
-        email = flask.request.form['email']
-        if flask.request.form['password'] == users[email]['password']:
+    if token is not None:
+        email,password = token.split(":") # naive token
+        if email not in users: return
+        if password == users[email]['password']:
             user = User()
             user.id = email
             flask_login.login_user(user)
-            return flask.redirect(flask.url_for('protected'))
+            return user
+        return None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template("index.html")
+    if request.method == 'POST':
+        email = request.form['email']
+        if request.form['password'] == users[email]['password']:
+            user = User()
+            user.id = email
+            flask_login.login_user(user)
+            return redirect(url_for('protected'))
 
     return 'Bad login'
 
 
 @app.route('/protected')
 @flask_login.login_required
-def protected(): return 'Logged in as: ' + flask_login.current_user.id
+def protected(): return 'Loggedin:'+ flask_login.current_user.id
 
 @app.route('/logout')
 def logout():
