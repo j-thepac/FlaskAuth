@@ -15,14 +15,14 @@ login_manager.init_app(app)
 users = {'test@gmail.com': {'password':  os.environ.get("PASSWORD") }}
 
 class User(flask_login.UserMixin):
-    pass
+    def __init__(self,  email):
+        self.id = email
 
-
+#called before every request. It is used to check what userid is in the current session and will load the user object for that id.
 @login_manager.user_loader
 def user_loader(email):
     if email not in users:return
-    user = User()
-    user.id = email
+    user = User(email)
     return user
 
 @login_manager.request_loader
@@ -35,8 +35,7 @@ def request_loader(request):
         email,password = token.split(":") # naive token
         if email not in users: return
         if password == users[email]['password']:
-            user = User()
-            user.id = email
+            user = User(email)
             flask_login.login_user(user)
             return user
         return None
@@ -48,8 +47,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         if request.form['password'] == users[email]['password']:
-            user = User()
-            user.id = email
+            user = User(email)
             flask_login.login_user(user)
             return redirect(url_for('protected'))
 
