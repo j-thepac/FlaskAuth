@@ -1,8 +1,6 @@
-"""
- r=requests.post(url="http://127.0.0.1:5000/login",data={"email":'foo@bar.tld',"password":'secret'},verify=False)
 
+# r=requests.post(url="http://127.0.0.1:5000/login",data={"email":'foo@bar.tld',"password":'secret'},verify=False)
 
-"""
 import os
 import flask_login
 from flask import render_template,Flask,request,redirect,url_for
@@ -31,7 +29,7 @@ def validate(email,password):
 def request_loader(request):
     token = request.headers.get('Authorization')# if token is None:token = request.args.get('token')
     if token is not None:
-        email,password = token.split(":") # naive token
+        email,password = token.split(":")
         if (validate(email, password)):
             user = User(email)
             flask_login.login_user(user)
