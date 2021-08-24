@@ -25,3 +25,7 @@ This is a simple project to demo authentication .
 r=requests.get("http://127.0.0.1:5000/protected",headers={'Authorization': 'email:password'})*
 
 
+## Read
+https://github.com/miguelgrinberg/Flask-HTTPAuth/issues/14
+
+Flask-HTTPAuth only deals with authentication according to the HTTP standard, so there is no concept of sessions or logging in or out. You can use an extension such as Flask-Login if you want to build a login system on top of this.
