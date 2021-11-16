@@ -1,6 +1,6 @@
 # FLASK AUTHENTICATION
 This is a simple project to demo authentication . 
-
+( use 0.0.0.0  and port fowarding for using in docker -Ex : app.run(host='0.0.0.0', port="5432",debug=True) )
 ## Requirement
 * Valid user should be to open http://127.0.0.1:5000/protected
 
